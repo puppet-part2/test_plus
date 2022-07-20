@@ -100,7 +100,7 @@ struct edge_one
   struct edge_one *next;
 }
 
-static struct edge_one one_edge_now = NULL;
+static struct edge_one *one_edge_now = NULL;
 
 struct edge_head
 {
