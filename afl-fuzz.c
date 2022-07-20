@@ -21791,7 +21791,6 @@ int main(int argc, char **argv)
   }
   
 
-  exit(0);
 
   initialize_lto();
   doc_path = access(DOC_PATH, F_OK) ? "docs" : DOC_PATH;

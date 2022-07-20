@@ -483,7 +483,7 @@ bool AFLCoverage::runOnModule(Module &M)
   bb_now = bb_queue;
   while(bb_now != NULL)
   {
-    fprintf(bb_file, "a\n");
+    fprintf(bb_file, "%c\n",'a');
     fprintf(bb_file, "%u\n", bb_now->trace_id);
     fprintf(bb_file, "%u\n", bb_now->constant_value);
     bb_now = bb_now->next;
@@ -491,7 +491,7 @@ bool AFLCoverage::runOnModule(Module &M)
   edge_now = edge_queue;
   while(edge_now != NULL)
   {
-    fprintf(bb_file, "b\n");
+    fprintf(bb_file, "%c\n",'b');
     fprintf(bb_file, "%u\n", edge_now->edge_num);
     one_edge_now = edge_now->subedge;
     while(one_edge_now != NULL)
@@ -501,7 +501,7 @@ bool AFLCoverage::runOnModule(Module &M)
     }
     edge_now = edge_now->next;
   }
-  fprintf(bb_file, "c\n");
+  fprintf(bb_file, "%c\n",'c');
 
   fclose(bb_file);
 
