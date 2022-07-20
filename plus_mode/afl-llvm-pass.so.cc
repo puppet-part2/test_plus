@@ -506,6 +506,7 @@ bool AFLCoverage::runOnModule(Module &M)
   fclose(bb_file);
 
 
+  /*
   u32 record_map_size = 0;
   u32 test_area_ptr = 0;
   if ((bb_file_ptr = getenv("AFL_LLVM_DOCUMENT_IDS")) != NULL)
@@ -536,10 +537,10 @@ bool AFLCoverage::runOnModule(Module &M)
     fseek(bb_file, 0, SEEK_SET);
     fprintf(bb_file, "%u\n", test_area_ptr);
   }
-#endif /* ^__x86_64__ */
-
+#endif 
 
   fclose(bb_file);
+  */
 
   /* Say something nice. */
 
