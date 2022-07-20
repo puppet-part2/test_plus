@@ -98,7 +98,7 @@ struct edge_one
 {
   unsigned int edge_id;
   struct edge_one *next;
-}
+};
 
 static struct edge_one *one_edge_now = NULL;
 
@@ -107,7 +107,7 @@ struct edge_head
   unsigned int edge_num;
   struct edge_head *next;
   struct edge_one *subedge;
-}
+};
 
 static struct edge_head *edge_queue = NULL;
 static struct edge_head *edge_now = NULL;
