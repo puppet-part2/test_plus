@@ -21735,6 +21735,7 @@ int main(int argc, char **argv)
       }
       else if (in_type == 'b')
       {
+        break;
         struct edge_head *edge_new = (struct edge_head *)malloc(sizeof(struct edge_head));
         fscanf(fpRead, "%u", &edge_new->edge_num);
         u32 tmponenum = edge_new->edge_num;
