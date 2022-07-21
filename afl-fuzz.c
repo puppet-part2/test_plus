@@ -21784,8 +21784,7 @@ int main(int argc, char **argv)
 
     
   }
-  
-
+  afl_map_size = (u32) afl_map_size;
 
   initialize_lto();
   doc_path = access(DOC_PATH, F_OK) ? "docs" : DOC_PATH;
