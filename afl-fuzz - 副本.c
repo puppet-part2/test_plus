@@ -78,6 +78,40 @@
 
 #define maxu64 18446744073709551615
 
+
+struct bb
+{
+  //BasicBlock *bb_p; /* Basic block pointer                         */
+  unsigned int trace_id;
+  u32 constant_value;
+  struct bb *next;  /* Next element, if any                        */
+};
+
+static struct bb *bb_queue = NULL;
+static struct bb *bb_now = NULL;
+
+u32 *constant_array = NULL;
+
+
+
+struct edge_one
+{
+  unsigned int edge_id;
+  struct edge_one *next;
+};
+
+static struct edge_one *one_edge_now = NULL;
+
+struct edge_head
+{
+  unsigned int edge_num;
+  struct edge_head *next;
+  struct edge_one *subedge;
+};
+
+static struct edge_head *edge_queue = NULL;
+static struct edge_head *edge_now = NULL;
+
 struct loghistory
 {
   u32 indata;
@@ -881,7 +915,7 @@ static void initialize_lto(void)
   // static u8  var_bytes[afl_map_size];       /* Bytes that appear to be variable */
   // static struct queue_entry*
   // top_rated[afl_map_size];                /* Top entries for bitmap bytes     */
-
+  SAYF("afl_map_size: %u\n", afl_map_size);
   virgin_bits = (u8 *)calloc(afl_map_size, sizeof(u8));
   virgin_tmout = (u8 *)calloc(afl_map_size, sizeof(u8));
   virgin_crash = (u8 *)calloc(afl_map_size, sizeof(u8));
@@ -21672,9 +21706,85 @@ int main(int argc, char **argv)
   {
     FILE *fpRead = fopen(bb_file_ptr, "r");
     fscanf(fpRead, "%u", &afl_map_size);
+
+    //new code
+    u32 constant_array_num = 0;
+    char  in_type;
+    while(fscanf(fpRead,"%c",&in_type)){
+      if (in_type == 'a')
+      {
+        constant_array_num += 1;
+        struct bb *bb_new = (struct bb *)ck_alloc(sizeof(struct bb));
+        fscanf(fpRead, "%u", &bb_new->trace_id);
+        fscanf(fpRead, "%u", &bb_new->constant_value);
+        bb_new->next = NULL;
+
+        if (bb_queue ==NULL)
+        {
+          bb_queue = bb_new;
+          bb_now = bb_new;
+        }
+        else{
+          bb_now->next = bb_new;
+          bb_now = bb_new;
+        }
+      }
+      else if (in_type == 'b')
+      {
+        struct edge_head *edge_new = (struct edge_head *)ck_alloc(sizeof(struct edge_head));
+        fscanf(fpRead, "%u", &edge_new->edge_num);
+        u32 tmponenum = edge_new->edge_num;
+        edge_new->next = NULL;
+        edge_new->subedge = NULL;
+        while(tmponenum > 0){
+          struct edge_one *one_edge_new = (struct edge_one *)ck_alloc(sizeof(struct edge_one));
+          fscanf(fpRead, "%u", &one_edge_new->edge_id);
+          one_edge_new->next = NULL;
+          if(edge_new->subedge == NULL)
+          {
+            edge_new->subedge = one_edge_new;
+            one_edge_now = one_edge_new;
+          }
+          else{
+            one_edge_now->next = one_edge_new;
+            one_edge_now = one_edge_new;
+          }
+          tmponenum -= 1;
+        }
+
+        if(edge_queue == NULL)
+        {
+          edge_queue = edge_new;
+          edge_now = edge_new;
+        }
+        else{
+          edge_now->next = edge_new;
+          edge_now = edge_new;
+        }
+      }
+      else if(in_type == 'c')  
+        break;
+    }
+    //new code end
+
     fclose(fpRead);
     OKF("use lto_mode, the number of edge id is %u.", afl_map_size);
+
+    //new code
+    constant_array = (u32 *) malloc(constant_array_num * sizeof(u32));
+    bb_now = bb_queue;
+    while (bb_now != NULL)
+    {
+      constant_array[bb_now->trace_id] = bb_now->constant_value;
+      struct edge_head *bb_new = bb_now;
+      bb_now = bb_now->next;
+      ck_free(bb_new);
+    }
+    //new code end
+
+    
   }
+  afl_map_size = (u32) afl_map_size;
 
   initialize_lto();
   doc_path = access(DOC_PATH, F_OK) ? "docs" : DOC_PATH;
