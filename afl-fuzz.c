@@ -21772,8 +21772,8 @@ int main(int argc, char **argv)
         FATAL("read error: %c", in_type);
     }
 
-    //new code
-    constant_array = (u32 *) calloc(constant_array_max * sizeof(u32));
+    //new code  
+    constant_array = (u32 *) calloc(constant_array_max, sizeof(u32));
     bb_now = bb_queue;
     while (bb_now != NULL)
     {
