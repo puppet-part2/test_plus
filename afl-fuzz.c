@@ -21719,7 +21719,7 @@ int main(int argc, char **argv)
         struct bb *bb_new = (struct bb *)ck_alloc(sizeof(struct bb));
         fscanf(fpRead, "%u", &bb_new->trace_id);
         fscanf(fpRead, "%u", &bb_new->constant_value);
-        if(constant_array_max < bb_new->trace_id)
+        if(constant_array_max <= bb_new->trace_id)
           constant_array_max = bb_new->trace_id + 1;
         bb_new->next = NULL;
 
