@@ -617,7 +617,7 @@ double w_now;
 int g_now = 0;
 int g_max = 5000;
 #define operator_num 20
-#define swarm_num 5
+#define swarm_num 4
 #define period_core 200000
 u64 tmp_core_time = 0;
 int swarm_now = 0;
