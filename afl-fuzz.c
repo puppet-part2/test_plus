@@ -21711,6 +21711,7 @@ int main(int argc, char **argv)
     u32 constant_array_num = 0;
     char  in_type;
     while(fscanf(fpRead,"%c",&in_type)){
+      SAYF("in_type : '%c'",in_type );
       if (in_type == 'a')
       {
         constant_array_num += 1;
