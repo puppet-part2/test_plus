@@ -5835,7 +5835,7 @@ EXP_ST u8 common_fuzz_stuff(char **argv, u8 *out_buf, u32 len, struct loghistory
         lognow = tmplognow;
       } // start queue
     }
-    else if (tmploghead != NULL)
+    else //if (tmploghead != NULL)
     {
       if (lognow == NULL)
       {
@@ -5846,7 +5846,7 @@ EXP_ST u8 common_fuzz_stuff(char **argv, u8 *out_buf, u32 len, struct loghistory
         }
       }
       lognow->next = tmploghead;
-      if (tmplognow != NULL)
+      if (tmplognow != NULL && tmplognow->next == NULL)
         lognow = tmplognow; // add to queue
       else                  // tmplognow == NULL
       {
