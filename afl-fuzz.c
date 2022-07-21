@@ -21705,12 +21705,12 @@ int main(int argc, char **argv)
   else
   {
     FILE *fpRead = fopen(bb_file_ptr, "r");
-    fscanf(fpRead, "%u", &afl_map_size);
+    fscanf(fpRead, "%u\n", &afl_map_size);
 
     //new code
     u32 constant_array_num = 0;
     char  in_type;
-    while(fscanf(fpRead,"%c",&in_type)){
+    while(fscanf(fpRead,"%c\n",&in_type)){
       SAYF("in_type : '%c'",in_type );
       if (in_type == 'a')
       {
