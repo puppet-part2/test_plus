@@ -21778,6 +21778,8 @@ int main(int argc, char **argv)
     bb_now = bb_queue;
     while (bb_now != NULL)
     {
+      if(bb_now->trace_id > constant_array_max)
+        FATAL("ERROR constant_array_max");
       constant_array[bb_now->trace_id] = bb_now->constant_value;
       struct bb *bb_new = bb_now;
       bb_now = bb_now->next;
