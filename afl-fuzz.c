@@ -21781,13 +21781,7 @@ int main(int argc, char **argv)
       free(bb_new);
     }
     //new code end
-    SAYF("\n\n afl_map_size:%u ", afl_map_size);
-    SAYF("\n\n[ ");
-    for(int tmpka = 0; tmpka < constant_array_num; tmpka++)
-    {
-      SAYF(" %u, ", constant_array[tmpka]);
-    }
-    SAYF(" ]");
+
     
   }
   
