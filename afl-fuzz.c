@@ -21711,7 +21711,7 @@ int main(int argc, char **argv)
     u32 constant_array_num = 0;
     char  in_type;
     while(fscanf(fpRead,"%s",&in_type)){
-      SAYF("in_type : '%c'", in_type );
+      //SAYF("in_type : '%c'", in_type );
       if (in_type == 'a')
       {
         constant_array_num += 1;
@@ -21772,6 +21772,19 @@ int main(int argc, char **argv)
 
     fclose(fpRead);
     OKF("use lto_mode, the number of edge id is %u.", afl_map_size);
+
+    //new code
+    constant_array = (u32 *) malloc(constant_array_num * sizeof(u32));
+    bb_now = bb_queue;
+    while (bb_now != NULL)
+    {
+      constant_array[bb_now->trace_id] = bb_now->constant_value;
+      struct edge_head *bb_new = bb_now;
+      bb_now = bb_now->next;
+      ck_free(bb_new);
+    }
+    //new code end
+    
   }
 
   initialize_lto();
