@@ -21714,7 +21714,7 @@ int main(int argc, char **argv)
       if (in_type == 'a')
       {
         constant_array_num += 1;
-        struct bb *bb_new = (struct bb *)malloc(sizeof(struct bb));
+        struct bb *bb_new = (struct bb *)ck_alloc(sizeof(struct bb));
         fscanf(fpRead, "%u", &bb_new->trace_id);
         fscanf(fpRead, "%u", &bb_new->constant_value);
         bb_new->next = NULL;
@@ -21731,14 +21731,13 @@ int main(int argc, char **argv)
       }
       else if (in_type == 'b')
       {
-        break;
-        struct edge_head *edge_new = (struct edge_head *)malloc(sizeof(struct edge_head));
+        struct edge_head *edge_new = (struct edge_head *)ck_alloc(sizeof(struct edge_head));
         fscanf(fpRead, "%u", &edge_new->edge_num);
         u32 tmponenum = edge_new->edge_num;
         edge_new->next = NULL;
         edge_new->subedge = NULL;
         while(tmponenum > 0){
-          struct edge_one *one_edge_new = (struct edge_one *)malloc(sizeof(struct edge_one));
+          struct edge_one *one_edge_new = (struct edge_one *)ck_alloc(sizeof(struct edge_one));
           fscanf(fpRead, "%u", &one_edge_new->edge_id);
           one_edge_new->next = NULL;
           if(edge_new->subedge == NULL)
@@ -21779,7 +21778,7 @@ int main(int argc, char **argv)
       constant_array[bb_now->trace_id] = bb_now->constant_value;
       struct edge_head *bb_new = bb_now;
       bb_now = bb_now->next;
-      free(bb_new);
+      ck_free(bb_new);
     }
     //new code end
 
