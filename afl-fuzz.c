@@ -135,6 +135,40 @@ static struct change_byte *dict1d, *dict1d_cur, *dict1d_final;
 static struct start_byte *dict2d_hash[hashtablelen];
 static struct start_byte *distill_hash[hashtablelen];
 
+
+struct bb
+{
+  //BasicBlock *bb_p; /* Basic block pointer                         */
+  unsigned int trace_id;
+  u32 constant_value;
+  struct bb *next;  /* Next element, if any                        */
+};
+
+static struct bb *bb_queue = NULL;
+static struct bb *bb_now = NULL;
+
+u32 *constant_array = NULL;
+
+
+
+struct edge_one
+{
+  unsigned int edge_id;
+  struct edge_one *next;
+};
+
+static struct edge_one *one_edge_now = NULL;
+
+struct edge_head
+{
+  unsigned int edge_num;
+  struct edge_head *next;
+  struct edge_one *subedge;
+};
+
+static struct edge_head *edge_queue = NULL;
+static struct edge_head *edge_now = NULL;
+
 #define dictcount 8
 #define use_favorite_list 0.1
 #define favorite_list_len 8192
