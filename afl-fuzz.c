@@ -21712,7 +21712,7 @@ int main(int argc, char **argv)
     u32 constant_array_max = -1;
     char  in_type;
     while(fscanf(fpRead,"%s",&in_type)){
-      SAYF("in_type : '%c'", in_type );
+      //SAYF("in_type : '%c'", in_type );
       if (in_type == 'a')
       {
         constant_array_num += 1;
@@ -21769,7 +21769,7 @@ int main(int argc, char **argv)
       else if(in_type == 'c')  
         break;
       else
-        FATAL("read error: %s", in_type);
+        FATAL("read error: %c", in_type);
     }
 
     //new code
