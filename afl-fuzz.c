@@ -915,7 +915,7 @@ static void initialize_lto(void)
   // static u8  var_bytes[afl_map_size];       /* Bytes that appear to be variable */
   // static struct queue_entry*
   // top_rated[afl_map_size];                /* Top entries for bitmap bytes     */
-
+  SAYF("afl_map_size: %u\n", afl_map_size);
   virgin_bits = (u8 *)calloc(afl_map_size, sizeof(u8));
   virgin_tmout = (u8 *)calloc(afl_map_size, sizeof(u8));
   virgin_crash = (u8 *)calloc(afl_map_size, sizeof(u8));
