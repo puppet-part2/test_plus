@@ -21773,7 +21773,7 @@ int main(int argc, char **argv)
     }
 
     //new code
-    constant_array = (u32 *) malloc(constant_array_max * sizeof(u32));
+    constant_array = (u32 *) calloc(constant_array_max * sizeof(u32));
     bb_now = bb_queue;
     while (bb_now != NULL)
     {
@@ -21783,6 +21783,12 @@ int main(int argc, char **argv)
       ck_free(bb_new);
     }
     //new code end
+    SAYF("\n\n[ ");
+    for(int kkwra = 0; kkwra < constant_array_max; kkwra++){
+      SAYF("\u",constant_array[kkwra]);
+    }
+    SAYF(" ]");
+
     //new code end
 
     fclose(fpRead);
