@@ -21766,7 +21766,7 @@ int main(int argc, char **argv)
       else if(in_type == 'c')  
         break;
       else
-        FATAL("read error: %s", in_type);
+        FATAL("read error: %c", in_type);
     }
     //new code end
 
@@ -21784,7 +21784,7 @@ int main(int argc, char **argv)
       ck_free(bb_new);
     }
     //new code end
-    
+
   }
 
   initialize_lto();
