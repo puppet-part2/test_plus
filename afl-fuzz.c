@@ -21773,12 +21773,12 @@ int main(int argc, char **argv)
     }
 
     //new code  
-    constant_array = (u32 *) malloc(constant_array_max * sizeof(u32));
+    constant_array = (u32 *) calloc(constant_array_max, sizeof(u32));
     bb_now = bb_queue;
     while (bb_now != NULL)
     {
       constant_array[bb_now->trace_id] = bb_now->constant_value;
-      struct edge_head *bb_new = bb_now;
+      struct bb *bb_new = bb_now;
       bb_now = bb_now->next;
       ck_free(bb_new);
     }
