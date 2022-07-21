@@ -21783,11 +21783,13 @@ int main(int argc, char **argv)
       ck_free(bb_new);
     }
     //new code end
+    /*
     SAYF("\n\n[ ");
     for(int kkwra = 0; kkwra < constant_array_max; kkwra++){
       SAYF("%u, ",constant_array[kkwra]);
     }
     SAYF(" ]");
+    */
 
     //new code end
 
