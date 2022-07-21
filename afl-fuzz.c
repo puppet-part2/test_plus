@@ -21709,6 +21709,7 @@ int main(int argc, char **argv)
 
     //new code
     u32 constant_array_num = 0;
+    u32 constant_array_max = -1;
     char  in_type;
     while(fscanf(fpRead,"%s",&in_type)){
       SAYF("in_type : '%c'", in_type );
@@ -21718,6 +21719,8 @@ int main(int argc, char **argv)
         struct bb *bb_new = (struct bb *)ck_alloc(sizeof(struct bb));
         fscanf(fpRead, "%u", &bb_new->trace_id);
         fscanf(fpRead, "%u", &bb_new->constant_value);
+        if(constant_array_max < bb_new->trace_id)
+          constant_array_max = bb_new->trace_id + 1;
         bb_new->next = NULL;
 
         if (bb_queue ==NULL)
@@ -21770,7 +21773,7 @@ int main(int argc, char **argv)
     }
 
     //new code
-    constant_array = (u32 *) malloc(constant_array_num * sizeof(u32));
+    constant_array = (u32 *) malloc(constant_array_max * sizeof(u32));
     bb_now = bb_queue;
     while (bb_now != NULL)
     {
