@@ -21765,7 +21765,7 @@ int main(int argc, char **argv)
       else if(in_type == 'c')  
         break;
       else
-        FATAL("read error");
+        FATAL("read error: %c", in_type);
     }
     //new code end
 
