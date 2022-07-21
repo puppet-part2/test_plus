@@ -21706,6 +21706,69 @@ int main(int argc, char **argv)
   {
     FILE *fpRead = fopen(bb_file_ptr, "r");
     fscanf(fpRead, "%u", &afl_map_size);
+
+    //new code
+    u32 constant_array_num = 0;
+    char  in_type;
+    while(fscanf(fpRead,"%c",&in_type)){
+      if (in_type == 'a')
+      {
+        constant_array_num += 1;
+        struct bb *bb_new = (struct bb *)ck_alloc(sizeof(struct bb));
+        fscanf(fpRead, "%u", &bb_new->trace_id);
+        fscanf(fpRead, "%u", &bb_new->constant_value);
+        bb_new->next = NULL;
+
+        if (bb_queue ==NULL)
+        {
+          bb_queue = bb_new;
+          bb_now = bb_new;
+        }
+        else{
+          bb_now->next = bb_new;
+          bb_now = bb_new;
+        }
+      }
+      else if (in_type == 'b')
+      {
+        struct edge_head *edge_new = (struct edge_head *)ck_alloc(sizeof(struct edge_head));
+        fscanf(fpRead, "%u", &edge_new->edge_num);
+        u32 tmponenum = edge_new->edge_num;
+        edge_new->next = NULL;
+        edge_new->subedge = NULL;
+        while(tmponenum > 0){
+          struct edge_one *one_edge_new = (struct edge_one *)ck_alloc(sizeof(struct edge_one));
+          fscanf(fpRead, "%u", &one_edge_new->edge_id);
+          one_edge_new->next = NULL;
+          if(edge_new->subedge == NULL)
+          {
+            edge_new->subedge = one_edge_new;
+            one_edge_now = one_edge_new;
+          }
+          else{
+            one_edge_now->next = one_edge_new;
+            one_edge_now = one_edge_new;
+          }
+          tmponenum -= 1;
+        }
+
+        if(edge_queue == NULL)
+        {
+          edge_queue = edge_new;
+          edge_now = edge_new;
+        }
+        else{
+          edge_now->next = edge_new;
+          edge_now = edge_new;
+        }
+      }
+      else if(in_type == 'c')  
+        break;
+      else
+        FATAL("read error");
+    }
+    //new code end
+
     fclose(fpRead);
     OKF("use lto_mode, the number of edge id is %u.", afl_map_size);
   }
