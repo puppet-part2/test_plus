@@ -21709,7 +21709,7 @@ int main(int argc, char **argv)
 
     //new code
     u32 constant_array_num = 0;
-    u32 constant_array_max = -1;
+    u32 constant_array_max = 0;
     char  in_type;
     while(fscanf(fpRead,"%s",&in_type)){
       //SAYF("in_type : '%c'", in_type );
