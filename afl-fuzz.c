@@ -618,7 +618,7 @@ int g_now = 0;
 int g_max = 5000;
 #define operator_num 20
 #define swarm_num 5
-#define period_core 500000
+#define period_core 200000
 u64 tmp_core_time = 0;
 int swarm_now = 0;
 u32 afl_map_size = 0;
@@ -5886,7 +5886,7 @@ EXP_ST u8 common_fuzz_stuff(char **argv, u8 *out_buf, u32 len, struct loghistory
   else // not interesting test case
   {
     tmplognow = tmploghead;
-    while (tmploghead)
+    while (tmploghead != NULL)
     {
       tmplognow = tmploghead->next;
       ck_free(tmploghead);
