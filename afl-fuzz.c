@@ -5792,6 +5792,7 @@ EXP_ST u8 common_fuzz_stuff(char **argv, u8 *out_buf, u32 len, struct loghistory
             tmptmplognowfront = tmploghead;
             ck_free(tmptmplognow);
             tmptmplognow = tmploghead;
+            tmptmplognowfront = tmploghead;
           }
           else
           {
