@@ -78,40 +78,6 @@
 
 #define maxu64 18446744073709551615
 
-
-struct bb
-{
-  //BasicBlock *bb_p; /* Basic block pointer                         */
-  unsigned int trace_id;
-  u32 constant_value;
-  struct bb *next;  /* Next element, if any                        */
-};
-
-static struct bb *bb_queue = NULL;
-static struct bb *bb_now = NULL;
-
-u32 *constant_array = NULL;
-
-
-
-struct edge_one
-{
-  unsigned int edge_id;
-  struct edge_one *next;
-};
-
-static struct edge_one *one_edge_now = NULL;
-
-struct edge_head
-{
-  unsigned int edge_num;
-  struct edge_head *next;
-  struct edge_one *subedge;
-};
-
-static struct edge_head *edge_queue = NULL;
-static struct edge_head *edge_now = NULL;
-
 struct loghistory
 {
   u32 indata;
@@ -168,6 +134,40 @@ static struct change_byte *dict1d, *dict1d_cur, *dict1d_final;
 #define hashtablelen 8192
 static struct start_byte *dict2d_hash[hashtablelen];
 static struct start_byte *distill_hash[hashtablelen];
+
+
+struct bb
+{
+  //BasicBlock *bb_p; /* Basic block pointer                         */
+  unsigned int trace_id;
+  u32 constant_value;
+  struct bb *next;  /* Next element, if any                        */
+};
+
+static struct bb *bb_queue = NULL;
+static struct bb *bb_now = NULL;
+
+u32 *constant_array = NULL;
+
+
+
+struct edge_one
+{
+  unsigned int edge_id;
+  struct edge_one *next;
+};
+
+static struct edge_one *one_edge_now = NULL;
+
+struct edge_head
+{
+  unsigned int edge_num;
+  struct edge_head *next;
+  struct edge_one *subedge;
+};
+
+static struct edge_head *edge_queue = NULL;
+static struct edge_head *edge_now = NULL;
 
 #define dictcount 8
 #define use_favorite_list 0.1
@@ -617,8 +617,8 @@ double w_now;
 int g_now = 0;
 int g_max = 5000;
 #define operator_num 20
-#define swarm_num 5
-#define period_core 500000
+#define swarm_num 4
+#define period_core 200000
 u64 tmp_core_time = 0;
 int swarm_now = 0;
 u32 afl_map_size = 0;
@@ -915,7 +915,7 @@ static void initialize_lto(void)
   // static u8  var_bytes[afl_map_size];       /* Bytes that appear to be variable */
   // static struct queue_entry*
   // top_rated[afl_map_size];                /* Top entries for bitmap bytes     */
-  SAYF("afl_map_size: %u\n", afl_map_size);
+
   virgin_bits = (u8 *)calloc(afl_map_size, sizeof(u8));
   virgin_tmout = (u8 *)calloc(afl_map_size, sizeof(u8));
   virgin_crash = (u8 *)calloc(afl_map_size, sizeof(u8));
@@ -5834,7 +5834,7 @@ EXP_ST u8 common_fuzz_stuff(char **argv, u8 *out_buf, u32 len, struct loghistory
         lognow = tmplognow;
       } // start queue
     }
-    else if (tmploghead != NULL)
+    else //if (tmploghead != NULL)
     {
       if (lognow == NULL)
       {
@@ -5845,7 +5845,7 @@ EXP_ST u8 common_fuzz_stuff(char **argv, u8 *out_buf, u32 len, struct loghistory
         }
       }
       lognow->next = tmploghead;
-      if (tmplognow != NULL)
+      if (tmplognow != NULL && tmplognow->next == NULL)
         lognow = tmplognow; // add to queue
       else                  // tmplognow == NULL
       {
@@ -5886,7 +5886,7 @@ EXP_ST u8 common_fuzz_stuff(char **argv, u8 *out_buf, u32 len, struct loghistory
   else // not interesting test case
   {
     tmplognow = tmploghead;
-    while (tmploghead)
+    while (tmploghead != NULL)
     {
       tmplognow = tmploghead->next;
       ck_free(tmploghead);
@@ -21705,18 +21705,22 @@ int main(int argc, char **argv)
   else
   {
     FILE *fpRead = fopen(bb_file_ptr, "r");
-    fscanf(fpRead, "%u", &afl_map_size);
+    fscanf(fpRead, "%u\n", &afl_map_size);
 
     //new code
     u32 constant_array_num = 0;
+    u32 constant_array_max = 0;
     char  in_type;
-    while(fscanf(fpRead,"%c",&in_type)){
+    while(fscanf(fpRead,"%s",&in_type)){
+      //SAYF("in_type : '%c'", in_type );
       if (in_type == 'a')
       {
         constant_array_num += 1;
         struct bb *bb_new = (struct bb *)ck_alloc(sizeof(struct bb));
         fscanf(fpRead, "%u", &bb_new->trace_id);
         fscanf(fpRead, "%u", &bb_new->constant_value);
+        if(constant_array_max <= bb_new->trace_id)
+          constant_array_max = bb_new->trace_id + 1;
         bb_new->next = NULL;
 
         if (bb_queue ==NULL)
@@ -21731,6 +21735,7 @@ int main(int argc, char **argv)
       }
       else if (in_type == 'b')
       {
+        
         struct edge_head *edge_new = (struct edge_head *)ck_alloc(sizeof(struct edge_head));
         fscanf(fpRead, "%u", &edge_new->edge_num);
         u32 tmponenum = edge_new->edge_num;
@@ -21764,27 +21769,37 @@ int main(int argc, char **argv)
       }
       else if(in_type == 'c')  
         break;
+      else
+        FATAL("read error: %c", in_type);
     }
+
+    //new code  
+    constant_array = (u32 *) calloc(constant_array_max, sizeof(u32));
+    bb_now = bb_queue;
+    while (bb_now != NULL)
+    {
+      if(bb_now->trace_id > constant_array_max)
+        FATAL("ERROR constant_array_max");
+      constant_array[bb_now->trace_id] = bb_now->constant_value;
+      struct bb *bb_new = bb_now;
+      bb_now = bb_now->next;
+      ck_free(bb_new);
+    }
+    //new code end
+    /*
+    SAYF("\n\n[ ");
+    for(int kkwra = 0; kkwra < constant_array_max; kkwra++){
+      SAYF("%u, ",constant_array[kkwra]);
+    }
+    SAYF(" ]");
+    */
+
     //new code end
 
     fclose(fpRead);
     OKF("use lto_mode, the number of edge id is %u.", afl_map_size);
 
-    //new code
-    constant_array = (u32 *) malloc(constant_array_num * sizeof(u32));
-    bb_now = bb_queue;
-    while (bb_now != NULL)
-    {
-      constant_array[bb_now->trace_id] = bb_now->constant_value;
-      struct edge_head *bb_new = bb_now;
-      bb_now = bb_now->next;
-      ck_free(bb_new);
-    }
-    //new code end
-
-    
   }
-  afl_map_size = (u32) afl_map_size;
 
   initialize_lto();
   doc_path = access(DOC_PATH, F_OK) ? "docs" : DOC_PATH;
