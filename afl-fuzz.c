@@ -21792,7 +21792,7 @@ int main(int argc, char **argv)
       SAYF("%u, ",constant_array[kkwra]);
     }
     SAYF(" ]");
-    
+    exit(0);
 
     //new code end
 
