@@ -436,6 +436,8 @@ bool AFLCoverage::runOnModule(Module &M)
                 if (CI && isa<Instruction>(CI->getOperand(0)) && isa<ConstantInt>(CI->getOperand(1))){
                   struct bb *bb_new = (struct bb *)malloc(sizeof(struct bb));
                   bb_new->trace_id = afl_global_edge_id;
+                  Instruction *CII = dyn_cast<Instruction>(CI->getOperand(0));
+                  OKF("\n\nthe instruction is : %s\n\n", *CII); 
                   ConstantInt* CIII = dyn_cast<ConstantInt>(CI->getOperand(1));
                   //if (CIII->getBitWidth() <= 32)
                   bb_new->constant_value = CIII->getSExtValue();
